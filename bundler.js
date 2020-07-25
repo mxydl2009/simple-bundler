@@ -85,6 +85,8 @@ const generateCode = (entry) => {
   return `
     (function (graph) {
       function require(module) {
+        // localRequire函数用来将加载相对路径转换为加载绝对路径后返回结果
+        // 主要是由于这里存储的键为绝对路径，在依赖图中只能利用绝对路径来加载模块
         function localRequire(relativePath) {
           return require(graph[module].dependencies[relativePath])
         }
