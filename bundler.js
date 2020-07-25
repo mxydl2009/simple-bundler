@@ -72,10 +72,10 @@ const makeDependenciesGraph = (entry) => {
       code: item.code
     }
   })
-  console.log(graph)
+  return graph
 }
 
 // const moduleInfo = moduleAnalyzer('./src/index.js')
 const graphInfo = makeDependenciesGraph('./src/index.js')
 
-// console.log(moduleInfo)
+console.log(graphInfo)
