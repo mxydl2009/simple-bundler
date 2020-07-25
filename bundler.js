@@ -75,7 +75,41 @@ const makeDependenciesGraph = (entry) => {
   return graph
 }
 
-// const moduleInfo = moduleAnalyzer('./src/index.js')
-const graphInfo = makeDependenciesGraph('./src/index.js')
+// 从依赖图谱列表生成浏览器可用代码
+const generateCode = (entry) => {
+  const graph = makeDependenciesGraph(entry)
+  // 使用JSON.stringify为了避免下面用${graph}时变为'[object Object]'
+  // 实际这段字符串在浏览器中作为JavaScript代码运行时，graphCode实际上就是一个对象
+  const graphCode = JSON.stringify(graph)
+  // 返回的代码要包含在IIFE中
+  return `
+    (function (graph) {
+      function require(module) {
+        function localRequire(relativePath) {
+          return require(graph[module].dependencies[relativePath])
+        }
+        // 在定义exports时，由于是在IIFE之前，所以赋值语句必须要有分号作为结尾，否则要出错
+        var exports = {};
+        (function(require, exports, code) {
+          eval(code)
+        })(localRequire, exports, graph[module].code)
+        return exports
+      }
+      require('${entry}')
+    })(${graphCode})
+  `
+}
 
-console.log(graphInfo)
+const code = generateCode('./src/index.js')
+
+// 将code写到'./dist/bundle.js'文件中
+fs.writeFile('./dist/bundle.js', code, (err) => {
+  if(err) {
+    fs.mkdir('./dist', (err) => {
+      if(err) {
+        console.log('fail')
+      }
+      fs.writeFileSync('./dist/bundle.js', code)
+    })
+  }
+})
