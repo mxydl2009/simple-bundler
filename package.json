@@ -1,0 +1,20 @@
+{
+  "name": "webpack-implementation",
+  "version": "1.0.0",
+  "description": "",
+  "main": "bundler.js",
+  "scripts": {
+    "bundle": "node bundler | npx highlight"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "devDependencies": {
+    "@babel/core": "^7.10.5",
+    "@babel/parser": "^7.10.5",
+    "@babel/preset-env": "^7.10.4",
+    "@babel/traverse": "^7.10.5",
+    "cli-highlight": "^2.1.4"
+  },
+  "dependencies": {}
+}
